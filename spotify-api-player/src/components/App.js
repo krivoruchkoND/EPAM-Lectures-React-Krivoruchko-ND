@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import axios from "axios";
-import hash from "./hash";
-import logo from "./logo.svg";
+import { hash } from "../constants/utils";
 import "./App.css";
-import PlayerComponent from "./PlayerComponent";
+import PlayerComponent from "./MainScreen/Player/PlayerComponent";
+
 export const authEndpoint = 'https://accounts.spotify.com/authorize';
-// Replace with your app's client ID, redirect URI and desired scopes
 const clientId = "ddc5cceaefff4ad8aaa7f3797c9209cd";
 const redirectUri = "http://localhost:3000";
 const scopes = [
@@ -65,7 +64,6 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           {!this.state.token && (
             <a
               className="btn btn--loginApp-link"
