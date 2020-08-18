@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import { hash } from "../constants/utils";
 import "./App.css";
-import PlayerComponent from "./MainScreen/Player/PlayerComponent";
+import PlayerComponent from "./PlayerComponent/PlayerComponent";
 
 export const authEndpoint = 'https://accounts.spotify.com/authorize';
 const clientId = "ddc5cceaefff4ad8aaa7f3797c9209cd";
@@ -26,25 +26,30 @@ class App extends Component {
         duration_ms: 0,
       },
       is_playing: "Paused",
-      progress_ms: 0
+      progress_ms: 0,
+      no_data: false,
     };
     this.getCurrentlyPlaying = this.getCurrentlyPlaying.bind(this);
   }
 
   getCurrentlyPlaying(token) {
     // Make a call using the token
-    axios.interceptors.request.use(function (xhr) {
-      xhr.setRequestHeader("Authorization", "Bearer " + token);
-    });
-
     axios({
       url: "https://api.spotify.com/v1/me/player",
       type: "GET",
-    }).then((data) => {
+      headers: {"Authorization": "Bearer " + token}
+    }).then((response) => {
+      if(!response) {
+        this.setState({
+          no_data: true,
+        });
+        return;
+      }
       this.setState({
-        item: data.item,
-        is_playing: data.is_playing,
-        progress_ms: data.progress_ms,
+        item: response.data.item,
+        is_playing: response.data.is_playing,
+        progress_ms: response.data.progress_ms,
+        no_data: false,
       });
     })
   }
@@ -58,9 +63,11 @@ class App extends Component {
         token: _token
       });
     }
+    this.getCurrentlyPlaying(_token);
   }
 
   render() {
+    const { item, is_playing, progress_ms} = this.state;
     return (
       <div className="App">
         <header className="App-header">
@@ -72,12 +79,16 @@ class App extends Component {
               Login to Spotify
             </a>
           )}
-          {this.state.token && (
+          {!this.state.no_data ? (
             <PlayerComponent
-              item={this.state.item}
-              is_playing={this.state.is_playing}
-              progress_ms={this.progress_ms}
+              item={item}
+              is_playing={is_playing}
+              progress_ms={progress_ms}
             />
+          ) : (
+            <p>
+              You need to be playing a song on Spotify, for something to appear here.
+            </p>
           )}
         </header>
       </div>
