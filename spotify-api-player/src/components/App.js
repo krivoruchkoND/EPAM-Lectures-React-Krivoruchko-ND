@@ -39,7 +39,7 @@ class App extends Component {
       type: "GET",
       headers: {"Authorization": "Bearer " + token}
     }).then((response) => {
-      if(!response) {
+      if(!response.data) {
         this.setState({
           no_data: true,
         });
