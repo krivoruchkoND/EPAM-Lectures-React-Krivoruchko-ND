@@ -1,16 +1,9 @@
-import React, { Component } from "react";
-import axios from "axios";
-import { hash } from "../constants/utils";
-import "./App.css";
-import PlayerComponent from "./PlayerComponent/PlayerComponent";
-
-export const authEndpoint = 'https://accounts.spotify.com/authorize';
-const clientId = "ddc5cceaefff4ad8aaa7f3797c9209cd";
-const redirectUri = "http://localhost:3000";
-const scopes = [
-  "user-read-currently-playing",
-  "user-read-playback-state",
-];
+import React, { Component } from 'react';
+import axios from 'axios';
+import { hash } from '../constants/utils';
+import { AUTH_ENDPOINT, CLIENT_ID, REDIRECT_URL, API_URL, SCOPES } from '../constants/constants';
+import './App.css';
+import PlayerComponent from './PlayerComponent/PlayerComponent';
 
 class App extends Component {
   constructor() {
@@ -19,13 +12,13 @@ class App extends Component {
       token: null,
       item: {
         album: {
-          images: [{ url: "" }]
+          images: [{ url: '' }]
         },
-        name: "",
-        artists: [{ name: "" }],
+        name: '',
+        artists: [{ name: '' }],
         duration_ms: 0,
       },
-      is_playing: "Paused",
+      is_playing: 'Paused',
       progress_ms: 0,
       no_data: false,
     };
@@ -35,9 +28,9 @@ class App extends Component {
   getCurrentlyPlaying(token) {
     // Make a call using the token
     axios({
-      url: "https://api.spotify.com/v1/me/player",
-      type: "GET",
-      headers: {"Authorization": "Bearer " + token}
+      url: API_URL,
+      type: 'GET',
+      headers: {'Authorization': 'Bearer ' + token}
     }).then((response) => {
       if(!response.data) {
         this.setState({
@@ -69,12 +62,12 @@ class App extends Component {
   render() {
     const { item, is_playing, progress_ms} = this.state;
     return (
-      <div className="App">
-        <header className="App-header">
+      <div className='App'>
+        <header className='App-header'>
           {!this.state.token && (
             <a
-              className="btn btn--loginApp-link"
-              href={`${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`}
+              className='btn btn--loginApp-link'
+              href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}&scope=${[SCOPES.CURRENTLY_PLAYING, SCOPES.PLAYBACK_STATE].join()}&response_type=token&show_dialog=true`}
             >
               Login to Spotify
             </a>
