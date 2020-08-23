@@ -30,7 +30,5 @@ class PlayerComponent extends Component {
       </div>
     );
   }
-  
-  
 }
 export default PlayerComponent;
