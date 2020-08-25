@@ -2,35 +2,39 @@ import { ACTIONS } from '../constants/constants';
 import { hash } from '../constants/utils';
 
 const initialState = {
-  token: '',
-  item: {
-    album: {
-      images: [{ url: '' }]
-    },
-    name: '',
-    artists: [{ name: '' }],
-    duration_ms: 0,
+  token: null,
+  userProfile: {
+    display_name: '',
+    country: '',
+    email: '',
+    id: '',
+    followers: {  total: 0 },
+    images: [{ url: '' },],
   },
-  is_playing: 'Paused',
-  progress_ms: 0,
-  no_data: false,
+  searchQuery: {
+    q: '',
+    type: '',
+    market: '',
+    limit: '20',
+    offset: '0',
+    include_external: '',
+  },
+  modal: {
+    loginModalShown: true,
+    userProfileModalShown: false,
+  }
 };
 
 export default (state = initialState, action) => {
   switch(action.type){
     case ACTIONS.SET_TOKEN:
       return { ...state, token: hash.access_token };
-    case ACTIONS.SET_CURRENTLY_PLAYING:
-      const { no_data, data } = action.payload;
-      return { 
-        ...state,
-        item: data.item,
-        is_playing: data.is_playing,
-        progress_ms: data.progress_ms,
-        no_data,
-      }
-    case ACTIONS.SET_HAVE_DATA:
-      return { ...state, no_data: !action.haveData };
+    case ACTIONS.SET_LOGIN_MODAL_SHOWN:
+      return { ...state, modal: { ...state.modal, loginModalShown: action.boolValue } };
+    case ACTIONS.SET_USER_PROFILE_MODAL_SHOWN:
+      return { ...state, modal: { ...state.modal, userProfileModalShown: action.boolValue } };
+    case ACTIONS.SET_USER_PROFILE:
+      return { ...state, userProfile: action.user };
     default:
       return state;
   }
